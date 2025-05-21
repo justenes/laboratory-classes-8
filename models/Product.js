@@ -1,4 +1,6 @@
 const { getDatabase } = require("../database");
+const Cart = require('./Cart');
+
 
 const COLLECTION_NAME = "products";
 
@@ -24,14 +26,15 @@ class Product {
   }
 
   static async add(product) {
-    const db = getDatabase();
+  const db = getDatabase();
 
-    try {
-      await db.collection(COLLECTION_NAME).insertOne(product);
-    } catch (error) {
-      console.error("Error occurred while adding product");
-    }
+  try {
+    console.log("Eklenen ürün:", product);
+    await db.collection(COLLECTION_NAME).insertOne(product);
+  } catch (error) {
+    console.error("Error occurred while adding product");
   }
+}
 
   static async findByName(name) {
     const db = getDatabase();
@@ -49,15 +52,12 @@ class Product {
     }
   }
 
-  static async deleteByName(name) {
-    const db = getDatabase();
+static async deleteByName(name) {
+  const db = getDatabase();
+  await db.collection(COLLECTION_NAME).deleteOne({ name });
 
-    try {
-      await db.collection(COLLECTION_NAME).deleteOne({ name });
-    } catch (error) {
-      console.error("Error occurred while deleting product");
-    }
-  }
+  await Cart.deleteProductByName(name);
+}
 
   static async getLast() {
     const db = getDatabase();

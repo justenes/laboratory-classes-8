@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-
+const cartRoutes = require('./routing/cart');
 const { PORT } = require("./config");
 const { mongoConnect } = require("./database");
 const logger = require("./utils/logger");
@@ -20,6 +20,9 @@ app.set("views", "views");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+
+
 
 app.use((request, _response, next) => {
   const { url, method } = request;
@@ -31,6 +34,7 @@ app.use((request, _response, next) => {
 app.use("/products", productsRoutes);
 app.use("/logout", logoutRoutes);
 app.use("/kill", killRoutes);
+app.use('/cart', cartRoutes);
 app.use(homeRoutes);
 app.use((request, response) => {
   const { url } = request;
